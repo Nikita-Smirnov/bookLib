@@ -1,26 +1,33 @@
 import React, {Component} from 'react';
-import {bindActionCreators} from 'redux'; //Импортируем модуль для создания действий
 import {connect} from 'react-redux';
-import {select} from "../actions/index";
+import {allBooks} from "../actions/index";
+import {Link} from 'react-router';
 
 class BooksList extends Component {
-    showList (){
-        if(this.props.books){
-            return this.props.books.map ((book) => {
-                return (
-                    <li onClick={() => this.props. select (book)} key={book.id}>
-                        <div className="bookContainer">
-                            <div className="bookMainInfo">
-                                <img src={book.img}/>
-                                <span>{book.name}</span>
-                            </div>
-                            <div className="bookInfo">
-                                <span>{book.author}</span><br/>
-                                <span>{book.genre}</span><br/>
-                                <span className="price">{book.price}</span>
-                            </div>
-                        </div>
+    constructor() {
+        super(...arguments);
+        let books = allBooks(); //Получаем все книги
+        this.props.dispatch(books);
+    }
 
+    showList() {
+        if (this.props.books) {
+            return this.props.books.map((book) => {
+                return (
+                    <li key={book.id}>
+                        <Link to={`/${book.id}`}>
+                            <div className="bookContainer">
+                                <div className="bookMainInfo">
+                                    <img src={book.img}/>
+                                    <span>{book.name}</span>
+                                </div>
+                                <div className="bookInfo">
+                                    <span>{book.author}</span><br/>
+                                    <span>{book.genre}</span><br/>
+                                    <span className="price">{book.price}</span>
+                                </div>
+                            </div>
+                        </Link>
                     </li>
                 );
             });
@@ -28,25 +35,22 @@ class BooksList extends Component {
 
     }
 
-    render () {
+    render() {
         return (
             <div className="bListItem">
                 <ul>
-                    {this.showList ()}
+                    {this.showList()}
                 </ul>
             </div>
         );
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(store) {
     return {
-        books: state.books
+        books: store.books.books,
+        isLoading: store.books.isLoading
     };
 }
 
-function matchDispatchToProps (dispatch) {
-    return bindActionCreators({select: select}, dispatch)
-}
-
-export default connect(mapStateToProps, matchDispatchToProps)(BooksList);
+export default connect(mapStateToProps)(BooksList);

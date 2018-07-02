@@ -1,11 +1,18 @@
-
-export default function (state=null, action) {
+export function bookActive(state={books: [], isLoading: false}, action) {
     switch (action.type){
-        case 'BOOK_SELECTED':
-            return action.payload;
-            break;
-        default:
-            return state;
-    }
 
+        case 'GET_BOOKS_PENDING':
+            state = {...state, isLoading: true};
+            break;
+        case 'GET_BOOKS_FULFILLED': {
+            state = {...state, isLoading: false, books: action.payload.data};
+            break;
+        }
+        case 'GET_BOOKS_REJECTED': {
+            state = {...state, isLoading: false, message: action.payload.message};
+            break;
+        }
+
+    }
+    return state;
 }

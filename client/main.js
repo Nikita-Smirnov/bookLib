@@ -1,16 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
-import {createStore} from 'redux';
-import allReducers from "./reducers/index"; //Подключаем все преобразователи
+import store from './store';
+import {Router, Route, IndexRoute, browserHistory} from 'react-router';
+
 import WebPage from './components/webPage'; //Подключаем компонент отображения информации на странице
-
-
-const store = createStore(allReducers); //Создаем Хранилище
+import BooksList from './containers/bookList';
+import BookDetail from './containers/bookDetail';
 
 ReactDOM.render(
     <Provider store={store}>
-        <WebPage/>
+        <Router history={browserHistory}>
+            <Route path="/" component={WebPage}>
+                <IndexRoute component={BooksList} />
+                <Route path=":idBook" component={BookDetail}/>
+            </Route>
+        </Router>
     </Provider>,
     document.getElementById('booksLib')
 );
